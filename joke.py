@@ -1,0 +1,35 @@
+import gradio as gr
+import requests
+FastAPI_URL = "http://127.0.0.1:8000/joke"
+def joke(prompt,category,language):
+    response=requests.post(FastAPI_URL,json={"prompt":prompt,
+    "category":category,
+    "language":language})
+    if response.status_code==200:
+        return response.json()["answer"]
+    else:
+        return "Error conecting FastAPI"
+demo=gr.Interface(
+    fn=joke,
+    inputs=[gr.Textbox(label="Enter prompt"),
+    gr.Dropdown(
+        choices=[
+            "Programming",
+            "Dad Joke",
+            "Animal",
+            "School",
+            "Office",
+            "Random"
+        ],
+        label="Choose category"),
+    gr.Dropdown(
+        choices=[
+            "Telugu",
+            "Hindi",
+            "English" 
+        ],
+        label="choose Language"
+    )
+    ],
+outputs=gr.Textbox(label="Anser here",lines=20))
+demo.launch()
